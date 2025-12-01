@@ -53,7 +53,7 @@ def write_files(year, day, task_description, puzzle_input):
 
 def main(day):
     from config import session_cookie
-    year = 2024
+    year = 2025
     task_description, puzzle_input = get_advent_of_code_input(year, day, session_cookie)
     write_files(year, day, task_description, puzzle_input)
 

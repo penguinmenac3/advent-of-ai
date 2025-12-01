@@ -18,8 +18,10 @@
 				"donjayamanne.githistory",
 				"ms-python.python",
 				"ms-vscode.cpptools-extension-pack",
-				"golang.go",
-				"commitollama.commitollama",
+				"streetsidesoftware.code-spell-checker",
+				"pomdtr.excalidraw-editor",
+				"charliermarsh.ruff",
+				"astral-sh.ty"
 			]
 		}
 	}

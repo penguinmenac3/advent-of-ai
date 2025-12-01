@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm
+FROM python:3.14-bookworm
 
 RUN apt update && apt upgrade
 RUN apt install -y git openssh-client g++ curl build-essential golang
@@ -6,7 +6,7 @@ RUN apt install -y git openssh-client g++ curl build-essential golang
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN pip install bs4 requests tqdm
 
-WORKDIR /workspaces/adventofcode-2024
+WORKDIR /workspaces/advent-of-ai
 
 # For deployment use this
 #RUN npm i -g serve
