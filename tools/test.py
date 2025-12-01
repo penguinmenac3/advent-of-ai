@@ -108,7 +108,7 @@ def test_day(year, day, debug=False):
 
 
 if __name__ == "__main__":
-    year = 2024
+    year = 2025
     if len(sys.argv) == 2:
         test_day(year, int(sys.argv[1]))
     elif len(sys.argv) == 3 and sys.argv[2] == "debug":
