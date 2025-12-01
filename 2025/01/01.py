@@ -3,33 +3,30 @@ import sys
 
 
 def calculate_password_from_stream():
-    """
-    Calculates the number of times the dial points to zero from streaming input.
-
-    Computes the result as input is received, yielding an efficient approach to 
-    immediate processing of large input series.
-    
-    :return: Total count of the dial pointing to zero
-    """
+    """Calculates the password based on dial movements read from standard input."""
     dial_size = 100
-    zero_count = 0
     current_position = 50
 
+    zero_count = 0
+    zero_crossings = 0
     for line in sys.stdin:
         direction = line[0]
         steps = int(line[1:].strip())
 
         if direction == 'L':
+            zero_crossings -= ((current_position - 1) % 100 - steps) // dial_size
             current_position = (current_position - steps) % dial_size
         elif direction == 'R':
+            zero_crossings += (current_position + steps) // dial_size
             current_position = (current_position + steps) % dial_size
 
         if current_position == 0:
             zero_count += 1
 
-    return zero_count
+    return zero_count, zero_crossings
 
 
 if __name__ == "__main__":
-    zero_count = calculate_password_from_stream()
+    zero_count, zero_crossings = calculate_password_from_stream()
     print(zero_count)
+    print(zero_crossings)
