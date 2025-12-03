@@ -54,6 +54,8 @@ def main() -> None:
     part1 = 0
     part2 = 0
 
+    print("input > ")
+    sys.stdout.flush()
     for raw in sys.stdin:
         line = raw.strip()
         if not line:

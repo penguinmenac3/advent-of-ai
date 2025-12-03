@@ -4,7 +4,6 @@ import sys
 
 def main():
     """Read ranges from stdin, find invalid IDs, and print their sum."""
-    ranges = sys.stdin.read().strip()
 
     def is_invalid_id_part1(number):
         number_str = str(number)
@@ -27,6 +26,9 @@ def main():
 
     invalid_ids_part1_sum = 0
     invalid_ids_part2_sum = 0
+    print("input > ")
+    sys.stdout.flush()
+    ranges = sys.stdin.read().strip()
     for range_str in ranges.split(","):
         start, end = map(int, range_str.split("-"))
         for number in range(start, end + 1):

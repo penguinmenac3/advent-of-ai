@@ -9,6 +9,8 @@ def calculate_password_from_stream():
 
     zero_count = 0
     zero_crossings = 0
+    print("input > ")
+    sys.stdout.flush()
     for line in sys.stdin:
         direction = line[0]
         steps = int(line[1:].strip())
