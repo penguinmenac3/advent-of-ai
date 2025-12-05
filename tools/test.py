@@ -11,12 +11,24 @@ def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
     if debug:
         infile = f"../{year}/{day:02d}/input_example.txt"
 
-    start_time = time.perf_counter_ns()
+    start_time = None
     result = None
     try:
-        result = subprocess.run(f"{binary} < {infile}", check=True, text=True, shell=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                timeout=30).stdout
+        with subprocess.Popen(f"{binary}", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, shell=True) as proc:
+            # Wait for the "input > " prompt
+            while True:
+                output = proc.stdout.readline()
+                if "input > " in output:
+                    break
+
+            # Start the timer and send the input
+            start_time = time.perf_counter_ns()
+            with open(infile, "r") as f:
+                proc.stdin.write(f.read())
+                proc.stdin.close()
+
+            result = proc.stdout.read()
+            proc.wait()
     except subprocess.CalledProcessError as e:
         result = e.stdout
     except subprocess.TimeoutExpired as e:
@@ -26,6 +38,7 @@ def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
     except KeyboardInterrupt:
         if result is None:
             result = "Canceled by User"
+
     end_time = time.perf_counter_ns()
     result = result.strip()
     if solution is None:
@@ -109,7 +122,13 @@ def test_day(year, day, debug=False):
 
 if __name__ == "__main__":
     year = 2025
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 1:
+        for day in range(1, 24):
+            try:
+                test_day(year, day)
+            except FileNotFoundError:
+                pass
+    elif len(sys.argv) == 2:
         test_day(year, int(sys.argv[1]))
     elif len(sys.argv) == 3 and sys.argv[2] == "debug":
         test_day(year, int(sys.argv[1]), debug=True)
