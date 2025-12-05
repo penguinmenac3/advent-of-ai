@@ -5,11 +5,15 @@ import time
 import subprocess
 
 
+# Define the base directory as the workspace root
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
-    infile = f"../{year}/{day:02d}/input.txt"
+    infile = os.path.join(BASE_DIR, f"{year}/{day:02d}/input.txt")
     status = "FAILED"
     if debug:
-        infile = f"../{year}/{day:02d}/input_example.txt"
+        infile = os.path.join(BASE_DIR, f"{year}/{day:02d}/input_example.txt")
 
     start_time = None
     result = None
@@ -48,6 +52,11 @@ def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
         status = "PASSED"
     else:
         status = f"{result}\nExpected Result: {solution[0]}, {solution[1]}\nFAILED"
+    
+    if start_time is None or end_time is None:
+        status = "FAILED (start_time or end_time not set)"
+        return -1, status
+
     if (end_time - start_time) / 1e6 > 1000:
         status = f"{status} (slow)"
         return (end_time-start_time) / 1e6, status
@@ -91,10 +100,10 @@ def measure_compilation_time(lang, src, binary):
 
 
 def load_solution(year, day):
-    fname = f"../{year}/{day:02d}/solution.txt"
+    fname = os.path.join(BASE_DIR, f"{year}/{day:02d}/solution.txt")
     if not os.path.exists(fname):
         return None
-    
+
     with open(fname, "r") as f:
         solution = [
             line.strip()
@@ -104,13 +113,14 @@ def load_solution(year, day):
 
 
 def test_day(year, day, debug=False):
-    measure_compilation_time("cpp", "./test.cpp", "./test.run")
+    measure_compilation_time("cpp", os.path.join(BASE_DIR, "tools/test.cpp"), os.path.join(BASE_DIR, "tools/test.run"))
     solution = load_solution(year, day)
     print(f"# Testing day: {day}")
-    languages = [f.split(".")[-1] for f in os.listdir(f"../{year}/{day:02d}") if f.startswith(f"{day:02d}") and not f.endswith(".run")]
+    day_dir = os.path.join(BASE_DIR, f"{year}/{day:02d}")
+    languages = [f.split(".")[-1] for f in os.listdir(day_dir) if f.startswith(f"{day:02d}") and not f.endswith(".run")]
     for lang in languages:
-        src = f"../{year}/{day:02d}/{day:02d}.{lang}"
-        binary = f"../{year}/{day:02d}/{day:02d}-{lang}.run"
+        src = os.path.join(day_dir, f"{day:02d}.{lang}")
+        binary = os.path.join(day_dir, f"{day:02d}-{lang}.run")
         if lang == "py":
             binary = src
         if os.path.exists(src):
