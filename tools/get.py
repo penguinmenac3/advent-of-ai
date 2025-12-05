@@ -28,7 +28,7 @@ def get_advent_of_code_input(year, day, session_cookie):
         # Extract the puzzle input
         input_url = base_url + '/input'
         input_response = requests.get(input_url, cookies={'session': session_cookie})
-        puzzle_input = input_response.text.strip()
+        puzzle_input = input_response.text
     else:
         print(f"{os.path.join(BASE_DIR, f'{year}', f'{day:02d}', 'input.txt')} already exists, skipping download.")
     

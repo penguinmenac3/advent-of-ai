@@ -22,7 +22,7 @@ def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
             # Wait for the "input > " prompt
             while True:
                 output = proc.stdout.readline()
-                if "input > " in output:
+                if "input > " in output or "Go!" in output:
                     break
 
             # Start the timer and send the input
@@ -64,7 +64,7 @@ def run_binary(binary, year, day, solution, debug, N = 10, N_warmup=5):
         return (end_time-start_time) / 1e6, status
 
     try:
-        cmd = ["./test.run", binary, infile, str(N), str(N_warmup)]
+        cmd = [os.path.join(BASE_DIR, "tools/test.run"), binary, infile, str(N), str(N_warmup)]
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         # Parse the output to get the measured time
@@ -117,10 +117,11 @@ def test_day(year, day, debug=False):
     solution = load_solution(year, day)
     print(f"# Testing day: {day}")
     day_dir = os.path.join(BASE_DIR, f"{year}/{day:02d}")
-    languages = [f.split(".")[-1] for f in os.listdir(day_dir) if f.startswith(f"{day:02d}") and not f.endswith(".run")]
-    for lang in languages:
-        src = os.path.join(day_dir, f"{day:02d}.{lang}")
-        binary = os.path.join(day_dir, f"{day:02d}-{lang}.run")
+    solutions = [f for f in os.listdir(day_dir) if f.startswith(f"{day:02d}") and not f.endswith(".run")]
+    for f in solutions:
+        lang = f.split(".")[-1]
+        src = os.path.join(day_dir, f)
+        binary = os.path.join(day_dir, f"{f}.run")
         if lang == "py":
             binary = src
         if os.path.exists(src):
